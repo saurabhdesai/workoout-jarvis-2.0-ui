@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AppHeader } from "./components/header/AppHeader";
 import { ChatWindow } from "./components/chat/ChatWindow";
 import { sendMessage } from "./services/api";
+import { clearWorkoutFile, downloadWorkoutFile } from "./services/api";
 import type { ChatMessage, ChatMode } from "./types/chat";
 import "./App.css";
 
@@ -59,6 +60,20 @@ function App() {
       setIsLoading(false);
     }
   };
+  const handleDownload = async () => {
+    try {
+      await downloadWorkoutFile();
+    } catch (error) {
+      console.error("Unable to download workout file", error);
+    }
+  };
+  const handleClear = async () => {
+    try {
+      await clearWorkoutFile();
+    } catch (error) {
+      console.error("Unable to clear workout file", error);
+    }
+  };
   return (
     <main className="min-h-dvh bg-[#fbfcfb] text-[#17231c] sm:bg-[#f5f7f4]">
       <div className="mx-auto flex h-dvh w-full flex-col bg-[#fbfcfb] sm:h-screen sm:max-w-5xl sm:border-x sm:border-[#dfe7df] sm:shadow-[0_0_60px_rgba(35,57,42,0.06)]">
@@ -66,6 +81,8 @@ function App() {
           mode={mode}
           onModeChange={handleModeChange}
           onNew={handleNewConversation}
+          onDownload={handleDownload}
+          onClear={handleClear}
         />
         <ChatWindow
           messages={messages}
