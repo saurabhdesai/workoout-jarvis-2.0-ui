@@ -16,6 +16,9 @@ export function ChatInput({
     onSend(message);
     setValue("");
   };
+  const isTouchDevice = () =>
+    typeof window !== "undefined" &&
+    (window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0);
   return (
     <div className="shrink-0 border-t border-[#e4ebe4] bg-[#fbfcfb] px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 sm:px-8 sm:pb-5 sm:pt-4">
       <div className="mx-auto flex max-w-2xl items-end gap-2 rounded-2xl border border-[#dfe8df] bg-white p-1.5 pl-3 shadow-[0_4px_18px_rgba(41,74,48,0.06)] focus-within:border-[#9fc0a3] focus-within:ring-2 focus-within:ring-[#e4efe5] sm:gap-3 sm:p-2 sm:pl-4">
@@ -23,12 +26,13 @@ export function ChatInput({
           value={value}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
-            if (event.key === "Enter" && !event.shiftKey) {
+            if (event.key === "Enter" && !event.shiftKey && !isTouchDevice()) {
               event.preventDefault();
               submit();
             }
           }}
           placeholder="Ask about your workout..."
+          enterKeyHint="enter"
           rows={1}
           className="max-h-32 min-h-10 flex-1 resize-none bg-transparent py-2 text-[14px] leading-5 text-[#304137] outline-none placeholder:text-[#a1aea5] sm:text-sm"
         />
@@ -42,7 +46,8 @@ export function ChatInput({
         </Button>
       </div>
       <p className="mx-auto mt-2 max-w-2xl text-center text-[11px] text-[#a0aaa2]">
-        Enter to send · Shift + Enter for a new line
+        <span className="hidden sm:inline">Enter to send · Shift + Enter for a new line</span>
+        <span className="sm:hidden">Enter for a new line · Use Send to submit</span>
       </p>
     </div>
   );
